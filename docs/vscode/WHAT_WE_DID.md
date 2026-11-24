@@ -105,3 +105,5 @@ node apps/vscode/scripts/bootstrap-vscode.mjs
 - 没有容器：沙箱是进程级的，不提供整机隔离或可重置工作区。
 - 记忆插件用 `@lixiangzhong/dsh-memory` 而不是 `dsh-memory-palace`：后者硬依赖 HTTP 服务器，本组合没有。
 - 侧栏、右侧面板、文件树等 Web 形态的界面被关闭，文件打开走 VS Code 自己的编辑器与 diff。
+
+- 升级到 0.2.3 时一度回退了自研界面细节（侧边栏 238px 默认宽、24px 折叠轨道、预设卡片隐藏内部 id、卸载自研 MCP 页签），已在 0.2.3 上恢复：侧边栏默认 238px / 最小 224px / 折叠 48px，预设卡片只显示本地化名称，MCP 页签删除、由官方 MCP 管理器接管。

@@ -36,8 +36,6 @@ import { PluginManagerController } from './manager-store.ts'
 import { en, ja, es, fr, de, ru, pt, zh, type PluginManagerLocaleKey } from './locales.ts'
 import { createNavigationStore } from './navigation-store.ts'
 import type {} from './slot-contract.ts'
-import { ManagedMcpTab } from './ManagedMcpTab.tsx'
-import { managedMcpDictionaries } from './locales/managed-mcp.ts'
 
 declare module '@deepseek-ai/cordis' {
   interface Context {
@@ -99,13 +97,6 @@ export const inject = ['slots', 'locale', 'remote', 'remote.pluginManager', 'rem
 export function apply(ctx: ClientContext): void {
   ctx.effect(() => ctx.locale.register(NS, { zh, en, ja, es, fr, de, ru, pt }), 'ui-plugin-manager: dictionaries')
   const t = ctx.locale.bind(NS)
-  const carrier = (globalThis as { __DSH_TRANSPORT__?: { managesExtensions?: boolean } }).__DSH_TRANSPORT__
-  if (carrier?.managesExtensions === true) {
-    ctx.effect(() => ctx.locale.register('plugins.managedMcp', managedMcpDictionaries), 'ui-plugin-manager: MCP dictionaries')
-    ctx.slots.inject('plugins.tab', () => ctx.slots.register({
-      name: 'plugins.tab', id: 'managed-mcp', order: -19, label: 'MCP', locale: 'plugins.managedMcp',
-    }, ManagedMcpTab))
-  }
   const controller = new PluginManagerController(ctx)
   ctx.effect(() => () => { controller.dispose() }, 'ui-plugin-manager: controller')
   ctx.provide('pluginChanges', { bundle: packageName => controller.observeChanges(packageName) })

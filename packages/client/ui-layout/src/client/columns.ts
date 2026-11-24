@@ -10,13 +10,14 @@ export interface Columns { sidebar: number; center: number; rightbar: number }
 /** Center width protected while the normal right column is open. */
 export const CENTER_MIN = 400
 /** Sidebar drag clamp floor. */
-export const SIDEBAR_MIN = 264
+export const SIDEBAR_MIN = 224
 /** Sidebar drag clamp ceiling. */
 export const SIDEBAR_MAX = 420
-/** Sidebar width before any user drag. */
-export const SIDEBAR_DEFAULT = 280
-/** Closed-sidebar rail: a 24px icon column between 16px horizontal paddings. */
-export const SIDEBAR_COLLAPSED = 56
+/** Sidebar width before any user drag: leaves room for the center in a narrow
+ * VS Code side bar. */
+export const SIDEBAR_DEFAULT = 238
+/** Closed-sidebar rail: a 36px icon column between 6px horizontal paddings. */
+export const SIDEBAR_COLLAPSED = 48
 /** Frame width below which the sidebar overlays the main content without a rail. */
 export const SIDEBAR_DRAWER_BREAKPOINT = 768
 /** Viewport width below which the sidebar auto-collapses to the rail (deepsuite
@@ -55,7 +56,10 @@ export function clampWidth(px: number, min: number, max: number): number {
 export function computeColumns(
   viewport: number, sidebar: number, rightbar: number, collapsedWidth = SIDEBAR_COLLAPSED, centeredSidebar = false,
 ): Columns {
-  const s = sidebar === 0 ? collapsedWidth : centeredSidebar ? viewport / 2 : clampWidth(sidebar, SIDEBAR_MIN, SIDEBAR_MAX)
+  const requested = sidebar === 0 ? collapsedWidth : centeredSidebar ? viewport / 2 : clampWidth(sidebar, SIDEBAR_MIN, SIDEBAR_MAX)
+  // Neither edge column ever exceeds the frame: a narrow carrier would
+  // otherwise overflow the page and paint a horizontal scrollbar.
+  const s = Math.min(requested, viewport)
   const available = viewport - s - CENTER_MIN
   const r = rightbar === 0 || available < RIGHTBAR_MIN
     ? 0

@@ -253,18 +253,6 @@
   }
 }
 
-.cardId {
-  flex-shrink: 0;
-  max-width: 35%;
-  font-family: var(--dsw-font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
-  font-size: 11px;
-  line-height: 21px;
-  color: var(--dsw-alias-label-tertiary);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 .cardFoot {
   display: flex;
   align-items: center;

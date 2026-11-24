@@ -117,7 +117,7 @@ describe('main panel selection', () => {
     actions.toggleSidebar()
     actions.selectPanel(null)
     expect(store.getSnapshot().panelInfo.activePanelId).toBeNull()
-    expect(store.getSnapshot().layoutInfo.narrowExpanded).toBe(false)
+    expect(store.getSnapshot().layoutInfo.narrowExpanded).toBe(true)
   })
 
   it('returns to the Conversation only when the selected main registration disappears', () => {
