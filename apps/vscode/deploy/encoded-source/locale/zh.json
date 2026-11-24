@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "MES 国标编码读取与搜索",
+    "description": "在标准和 PTC 预设中读取和搜索 GB18030、GBK、GB2312 与 UTF-8 源码。"
+  }
+}

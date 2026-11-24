@@ -1,0 +1,16 @@
+[
+  {
+    "directory": "workspace-a",
+    "sessions": [
+      { "cwd": "workspace-a", "blank": true },
+      { "cwd": "workspace-a", "blank": true }
+    ]
+  },
+  {
+    "directory": "workspace-b",
+    "sessions": [
+      { "cwd": "workspace-b", "blank": true },
+      { "cwd": "workspace-b", "blank": true }
+    ]
+  }
+]

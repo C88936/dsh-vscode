@@ -1,0 +1,21 @@
+{
+  "name": "@deepseek-ai/dsh-encoded-source-bundle",
+  "description": "Optional offline bundle that gives DSH encoding-aware read and grep for a mixed VB6/C# workspace (GBK, GB2312, GB18030, UTF-8, UTF-8 BOM, UTF-16) by replacing the native tools only while installed",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./locale/*.json": "./locale/*.json",
+    "./package.json": "./package.json"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": [
+        "./presets.patch.yml"
+      ]
+    }
+  },
+  "dependencies": {
+    "@deepseek-ai/dsh-tool-fs-encoded-source": "0.2.2-alpha.2"
+  }
+}

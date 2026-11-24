@@ -1,0 +1,48 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "lib/types"
+  },
+  "include": [
+    "src"
+  ],
+  "references": [
+    {
+      "path": "../../../vendor/cordis"
+    },
+    {
+      "path": "../../../vendor/schemastery"
+    },
+    {
+      "path": "../../llm/llm"
+    },
+    {
+      "path": "../../core/tools"
+    },
+    {
+      "path": "../../core/system-prompt"
+    },
+    {
+      "path": "../fs"
+    },
+    {
+      "path": "../tool-fs-search"
+    },
+    {
+      "path": "../../spill/spill"
+    },
+    {
+      "path": "../../util/code-language"
+    },
+    {
+      "path": "../../util/output-retention"
+    },
+    {
+      "path": "../../util/timeout"
+    },
+    {
+      "path": "../../session/working-directory"
+    }
+  ]
+}

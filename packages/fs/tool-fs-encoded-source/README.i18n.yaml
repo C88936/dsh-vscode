@@ -1,0 +1,106 @@
+# Bilingual-pair consistency record for README.md (docs/i18n/README.md): per heading
+# section, a hash of its English and Chinese blocks outside code blocks and generated regions.
+# After editing either side, bring the other along and re-record with:
+#   pnpm run verify-translation-pairing --write packages/fs/tool-fs-encoded-source/README.md
+/:
+  en: f76e034cdac18597
+  zh: dbc8ec22602bea9a
+/deepseek-ai-dsh-tool-fs-encoded-source:
+  en: a824afa9549b7c36
+  zh: e50260831e403551
+/deepseek-ai-dsh-tool-fs-encoded-source/summary:
+  en: 25fe362f87c1a89c
+  zh: 0e5dfce4bf616d6f
+/deepseek-ai-dsh-tool-fs-encoded-source/table-of-contents:
+  en: d152484eb41ac6b4
+  zh: 09388d293f9be9cb
+/deepseek-ai-dsh-tool-fs-encoded-source/use-this-package:
+  en: e28f8a716a2988c7
+  zh: 5459fee2b866ee94
+/deepseek-ai-dsh-tool-fs-encoded-source/use-this-package/encoding-policy:
+  en: 6ac7513baaadf368
+  zh: 490aa91a794bd11a
+/deepseek-ai-dsh-tool-fs-encoded-source/use-this-package/read-only-legacy-files:
+  en: 69cef7ae03b4d414
+  zh: fed97269b98f7aec
+/deepseek-ai-dsh-tool-fs-encoded-source/use-this-package/configuration:
+  en: 44afb0a7cc85b194
+  zh: 579cf26d7b2a469e
+/deepseek-ai-dsh-tool-fs-encoded-source/use-this-package/binary-resources:
+  en: d6a7fbed89466320
+  zh: 588501c83b6d18d7
+/deepseek-ai-dsh-tool-fs-encoded-source/use-this-package/deployment-requirement:
+  en: e1e6012451e05f79
+  zh: 05d72376403e4ec4
+/deepseek-ai-dsh-tool-fs-encoded-source/understand-the-implementation:
+  en: 42b15ac6321706aa
+  zh: 7ae097f3abcc5d9c
+/deepseek-ai-dsh-tool-fs-encoded-source/understand-the-implementation/design-concept:
+  en: 519a85e0411756b0
+  zh: 1d31bc82596959b2
+/deepseek-ai-dsh-tool-fs-encoded-source/understand-the-implementation/source-map:
+  en: 210126447e7becaa
+  zh: f2477e24bb92563b
+/deepseek-ai-dsh-tool-fs-encoded-source/understand-the-implementation/how-a-search-runs:
+  en: 1fb3bddd19ebba62
+  zh: 60bbea1798172b24
+/deepseek-ai-dsh-tool-fs-encoded-source/further-exploration:
+  en: a399c03a5cee1d4d
+  zh: 213b4e25d1af28b2
+/deepseek-ai-dsh-tool-fs-encoded-source/model-experience:
+  en: 215e7ba838619b7b
+  zh: a311da3843709f90
+/deepseek-ai-dsh-tool-fs-encoded-source/model-experience/system-prompt:
+  en: cf78b9dd5596495f
+  zh: 24ba47a0c5e02586
+/deepseek-ai-dsh-tool-fs-encoded-source/model-experience/system-prompt/what-the-model-sees:
+  en: a090288d28c48331
+  zh: 000fdc351fbf0108
+/deepseek-ai-dsh-tool-fs-encoded-source/model-experience/system-prompt/token-effect:
+  en: 89b8dc0e23fe1f67
+  zh: e03e054664e7efa2
+/deepseek-ai-dsh-tool-fs-encoded-source/model-experience/system-prompt/kv-cache-effect:
+  en: 7428787d271b0815
+  zh: d58b19ffd6e9069d
+/deepseek-ai-dsh-tool-fs-encoded-source/model-experience/tool-schemas:
+  en: 3039bc5e7a796b21
+  zh: f514cbe79ea2f33e
+/deepseek-ai-dsh-tool-fs-encoded-source/model-experience/tool-schemas/what-the-model-sees:
+  en: d1c61bebaaf83d35
+  zh: e5b33fd858a8a342
+/deepseek-ai-dsh-tool-fs-encoded-source/model-experience/tool-schemas/token-effect:
+  en: 89543bbd8ad2fca3
+  zh: 3c78c75499248eb4
+/deepseek-ai-dsh-tool-fs-encoded-source/model-experience/tool-schemas/kv-cache-effect:
+  en: c8cbbef533bdb90f
+  zh: f7e859095b951321
+/deepseek-ai-dsh-tool-fs-encoded-source/model-experience/results:
+  en: 8e1b2953471f22ba
+  zh: 765a7c4655654c0a
+/deepseek-ai-dsh-tool-fs-encoded-source/model-experience/results/what-the-model-sees:
+  en: 70d690d65bdde3ff
+  zh: 05d9b1fe407a7be7
+/deepseek-ai-dsh-tool-fs-encoded-source/model-experience/results/token-effect:
+  en: 8f9dc13129e66e81
+  zh: 6ffb8a111296f585
+/deepseek-ai-dsh-tool-fs-encoded-source/model-experience/results/kv-cache-effect:
+  en: f5d5f97a153f7c70
+  zh: d2b4d436eb295234
+/deepseek-ai-dsh-tool-fs-encoded-source/model-experience/tool-errors:
+  en: 2d4f2c8605eccab3
+  zh: 67f1f0218f73c6bf
+/deepseek-ai-dsh-tool-fs-encoded-source/model-experience/tool-errors/what-the-model-sees:
+  en: a21bbc6dd8f4b1e2
+  zh: 8614635e8cd1356b
+/deepseek-ai-dsh-tool-fs-encoded-source/model-experience/tool-errors/token-effect:
+  en: 681cadd5be7b8ac1
+  zh: fee601f1ba12f35e
+/deepseek-ai-dsh-tool-fs-encoded-source/model-experience/tool-errors/kv-cache-effect:
+  en: 3241295f9591f589
+  zh: a398842795a0dfd6
+/deepseek-ai-dsh-tool-fs-encoded-source/known-limitations-and-deferred-work:
+  en: c81261280d5069a4
+  zh: 7231f9b2f5a5ba26
+/deepseek-ai-dsh-tool-fs-encoded-source/known-limitations-and-deferred-work/dev-note:
+  en: c290bd679660baa3
+  zh: 33840bf0436aa19e

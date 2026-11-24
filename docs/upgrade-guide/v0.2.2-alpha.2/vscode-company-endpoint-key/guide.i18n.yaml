@@ -1,0 +1,16 @@
+# Bilingual-pair consistency record for guide.md (docs/i18n/README.md): per heading
+# section, a hash of its English and Chinese blocks outside code blocks and generated regions.
+# After editing either side, bring the other along and re-record with:
+#   pnpm run verify-translation-pairing --write docs/upgrade-guide/v0.2.2-alpha.2/vscode-company-endpoint-key/guide.md
+/:
+  en: eff0235cc0848cf6
+  zh: e68b5bee44fd7507
+/company-api-keys-in-vs-code-use-the-endpoint-url:
+  en: 2efbc7177fefd60f
+  zh: 2636563204a4baf5
+/company-api-keys-in-vs-code-use-the-endpoint-url/change:
+  en: fd8859eb9d414420
+  zh: 10da86bff017bed7
+/company-api-keys-in-vs-code-use-the-endpoint-url/migration:
+  en: 4136b11f9fbf3962
+  zh: 489307dd9041eb75

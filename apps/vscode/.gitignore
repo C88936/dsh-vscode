@@ -1,0 +1,8 @@
+# Development artifacts
+.dev-storage/
+.vscode-dev*/
+.vsix-test*/
+.vsix-staging/
+lib/
+release.json
+runtime-*.zip

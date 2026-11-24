@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "MES legacy encoding tools",
+    "description": "Read and search GB18030, GBK and GB2312 source files alongside UTF-8 in Standard and PTC."
+  }
+}

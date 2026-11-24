@@ -1,0 +1,91 @@
+# VS Code surface overlay.
+#
+# The extension host owns the page and the transport, so the Composition keeps
+# every application row of the shipped Web profile and drops only the rows that
+# need a listening HTTP server. `web-startup` stays: Connection reads its
+# trusted-host configuration from `ctx.webStartup`; it binds nothing by itself.
+# `ctx.connection`, `ctx.clientModules` and `ctx.typertGateway` are driven from
+# the extension's webview bridge instead of a socket.
+- id: webserver
+  disabled: true
+- id: web-runtime
+  disabled: true
+- id: hmr
+  disabled: true
+- id: client-hmr
+  disabled: true
+# The VS Code shell already identifies itself as a preview build. Reusing the
+# Desktop acknowledgement prevents a redundant modal whose save path depends
+# on editable profile settings.
+- id: ui-settings-general
+  config:
+    welcomeNoticeVersion: '2026-09-28.1'
+# The webview carrier installs native opening on the page transport, so the
+# general Sidebar keeps only its navigation face and registers no seats. These
+# rows were that face's content: the document preview, workspace file tree,
+# terminal, and browser tab types, plus the Office converter only the document
+# preview consumed. Office skills and the LibreOffice engine stay mounted from
+# the base composition.
+- id: ui-sidebar-documentpreview
+  disabled: true
+- id: ui-sidebar-files
+  disabled: true
+- id: ui-sidebar-terminal
+  disabled: true
+- id: ui-sidebar-browser
+  disabled: true
+- id: office-to-pdf
+  disabled: true
+# The VS Code host has no listening HTTP webServer, so the adaptive directory
+# picker cannot resolve its backend. Pin the native host chooser and its client
+# surface: the Host runs on the operator's machine, so the OS folder dialog can
+# select any local path, not only the VS Code workspace folders.
+- id: directory-picker
+  disabled: true
+- insert:
+    - id: directory-picker-native
+      name: '@deepseek-ai/dsh-host-directory-picker-native'
+    - id: directory-picker-native-surface
+      name: '@deepseek-ai/dsh-client-ui-directory-picker-native'
+# The Web composition already mounts the workspace-changes recorder and the
+# deliverables turn tail, so the VS Code surface keeps those rows as shipped.
+# The VS Code deployment does not upload Session logs for model improvement.
+- id: ui-settings-session-log
+  disabled: true
+- id: session-log-deepseek
+  disabled: true
+# The internal product configures an OpenAI-compatible endpoint through
+# `dsh.llmBaseUrl`/`dsh.llmModel`; the DeepSeek account, balance, and official
+# credential onboarding do not apply and must not prompt on first use. The
+# generated provider overlay owns the company route's endpoint, served model,
+# and model limits, and it names the route to the Models page so only that route
+# renders read-only; the row's other option is restated there because a patch
+# replaces this entry's whole config.
+- id: ui-settings-account
+  disabled: true
+- id: account-controller
+  disabled: true
+- id: ui-settings-models
+  config:
+    credentialOnboarding: false
+# The install dialog's registry comparison would send GET requests to the public
+# npm and npmmirror ping endpoints. This composition keeps the configured
+# registry instead of measuring those public services.
+- id: ui-plugin-manager
+  config:
+    registryProbeEnabled: false
+# An offered bundle is not installed, so it has no local README. With no npm
+# file CDN the Host reports its description as unavailable instead of fetching
+# it from jsdelivr, unpkg, or npmmirror; installed bundles still read their files.
+- id: plugin-manager
+  config:
+    detailNpmFileSources: []
+    # A local import in this deployment must carry a prepared closure: without
+    # one, pnpm may reach the configured registry for the dependency closure, and
+    # a public default registry is not the intranet source this build serves.
+    localInstallPolicy: require-record
+# Cross-session Markdown memory. The plugin ships its own settings card and
+# writes user-level and workspace-level memory files.
+- insert:
+    - id: dsh-memory
+      name: '@lixiangzhong/dsh-memory'

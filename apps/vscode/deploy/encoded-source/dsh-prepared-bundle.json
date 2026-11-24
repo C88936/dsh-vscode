@@ -1,0 +1,28 @@
+{
+  "format": "dsh-prepared-bundle/v1",
+  "name": "@deepseek-ai/dsh-encoded-source-bundle",
+  "version": "0.1.0",
+  "lockfile": {
+    "path": "pnpm-lock.yaml",
+    "sha256": "45625661be753f847e4762bbd15c4cd71274f6868d6a520a4d39dd5179774e7a"
+  },
+  "hostProvided": [],
+  "packages": [
+    {
+      "name": "@deepseek-ai/dsh-tool-fs-encoded-source",
+      "version": "0.2.2-alpha.2",
+      "path": "node_modules/@deepseek-ai/dsh-tool-fs-encoded-source",
+      "integrity": "sha512-LtAkAUs0FTRmGtB8Oa6hfTPycZUKoGfrcuWhQfLNSY2i1v1haYfFENIHnRPb+sLZFI8GE2NSm0Uah9vVKJT8YA=="
+    }
+  ],
+  "tarballs": [
+    {
+      "name": "@deepseek-ai/dsh-tool-fs-encoded-source",
+      "version": "0.2.2-alpha.2",
+      "file": "tarballs/deepseek-ai-dsh-tool-fs-encoded-source-0.2.2-alpha.2.tgz",
+      "integrity": "sha512-LtAkAUs0FTRmGtB8Oa6hfTPycZUKoGfrcuWhQfLNSY2i1v1haYfFENIHnRPb+sLZFI8GE2NSm0Uah9vVKJT8YA=="
+    }
+  ],
+  "installScripts": [],
+  "native": []
+}

@@ -1,0 +1,22 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      '@deepseek-ai/dsh-tool-fs-encoded-source':
+        specifier: 0.2.2-alpha.2
+        version: 0.2.2-alpha.2
+
+packages:
+
+  '@deepseek-ai/dsh-tool-fs-encoded-source@0.2.2-alpha.2':
+    resolution: {integrity: sha512-LtAkAUs0FTRmGtB8Oa6hfTPycZUKoGfrcuWhQfLNSY2i1v1haYfFENIHnRPb+sLZFI8GE2NSm0Uah9vVKJT8YA==}
+
+snapshots:
+
+  '@deepseek-ai/dsh-tool-fs-encoded-source@0.2.2-alpha.2': {}

@@ -1,0 +1,315 @@
+{
+  "name": "@deepseek-ai/dsh-vscode",
+  "displayName": "DSH for VS Code",
+  "description": "DeepSeek Harness in VS Code: the DSH application runs beside the extension host and renders its own client shell in a webview.",
+  "version": "0.2.3-alpha.2",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "publisher": "deepseek-ai",
+  "dsh": {
+    "runtimeRange": ">=0.2.3-alpha.2 <0.3.0"
+  },
+  "engines": {
+    "vscode": "^1.96.0"
+  },
+  "categories": [
+    "AI",
+    "Chat"
+  ],
+  "main": "./lib/extension.cjs",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "configuration": {
+      "title": "DSH",
+      "properties": {
+        "dsh.runtimePath": {
+          "type": "string",
+          "default": "",
+          "description": "Path to the DSH installation: a directory with package.json plus node_modules, or a source checkout. Empty uses DSH_VSCODE_RUNTIME, then the workspace."
+        },
+        "dsh.nodePath": {
+          "type": "string",
+          "default": "",
+          "description": "Node executable for the companion host; it must be 24.9 or newer. Empty uses DSH_VSCODE_NODE, then node on PATH."
+        },
+        "dsh.apiBaseUrl": {
+          "type": "string",
+          "default": "",
+          "description": "Messages-compatible API root for the DeepSeek provider. Empty uses DEEPSEEK_BASE_URL, then the public API."
+        },
+        "dsh.terminalBackend": {
+          "type": "string",
+          "enum": [
+            "local",
+            "vscode"
+          ],
+          "default": "local",
+          "description": "Where DSH shell tools run: a local child process under DSH sandbox policy and permission presets (local), or the VS Code integrated terminal (vscode), which is unconfined and disables permission presets."
+        },
+        "dsh.providerMode": {
+          "type": "string",
+          "enum": [
+            "deepseek",
+            "openai-compatible"
+          ],
+          "default": "openai-compatible",
+          "description": "Model provider shape. openai-compatible is the company route: it adds a private Chat Completions route from dsh.llmBaseUrl and does not fall back to the public DeepSeek API. deepseek uses the public DeepSeek API instead."
+        },
+        "dsh.providerRoute": {
+          "type": "string",
+          "default": "company",
+          "description": "Route name for the private provider, a lowercase hyphenated identifier. Deployment-owned: the generated launch overlay sets it, so a DSH profile edit cannot override it."
+        },
+        "dsh.llmBaseUrl": {
+          "type": "string",
+          "default": "http://127.0.0.1:8080/v1",
+          "description": "Deployment-owned Chat Completions root of the company endpoint. This company build ships the internal gateway; users normally change only the API key."
+        },
+        "dsh.llmModel": {
+          "type": "string",
+          "default": "your-model-id",
+          "description": "Model id the company route serves and lists. This company build ships the Qwen thinking variant; the active model selection remains profile-owned."
+        },
+        "dsh.llmApiKeyEnv": {
+          "type": "string",
+          "default": "DSH_LLM_API_KEY",
+          "description": "Deployment-owned environment name that carries the company endpoint key into the application. The generated launch overlay sets it; the key itself stays in VS Code SecretStorage."
+        },
+        "dsh.llmContextWindow": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 262144,
+          "description": "Context window declared for the company route's model. This company build ships 262,144 tokens (256K) for the Qwen gateway; it is deployment-owned, not a measurement of every endpoint."
+        },
+        "dsh.llmMaxTokens": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 128000,
+          "description": "Output-token cap declared for the company route's model. Leave unset to keep the pi-ai adapter default (128,000 tokens). This sizes the model and does not cap each request."
+        },
+        "dsh.limits.unaryBodyBytes": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 8388608,
+          "description": "Largest text request body, in bytes, the DSH page sends over the unary transport route. Larger bodies must use the file-upload carrier."
+        },
+        "dsh.limits.packageAssetCount": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 256,
+          "description": "Largest number of published assets one client package may contribute to one launch."
+        },
+        "dsh.limits.packageAssetBytes": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 2097152,
+          "description": "Largest single client-package asset, in bytes, copied into the launch directory."
+        },
+        "dsh.limits.packageAssetTotalBytes": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 33554432,
+          "description": "Largest total of client-package assets, in bytes, copied into one launch directory."
+        },
+        "dsh.limits.binaryResponseBytes": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 5242880,
+          "description": "Largest response body, in bytes, one binary page request accepts, such as a plugin detail image."
+        },
+        "dsh.update.feedUrl": {
+          "type": "string",
+          "scope": "application",
+          "default": "",
+          "description": "HTTPS update feed or directory URL, or a Windows network share directory that contains release-feed.json. Empty disables update checks. A workspace cannot change this setting."
+        },
+        "dsh.update.checkIntervalMinutes": {
+          "type": "integer",
+          "scope": "application",
+          "minimum": 0,
+          "default": 60,
+          "description": "Minutes between automatic update checks after startup. 0 keeps the update check manual only. A configured feed is checked at most once per interval. Application-scoped with the feed URL it governs."
+        },
+        "dsh.localPlugins": {
+          "type": "array",
+          "default": [],
+          "description": "Plugins mirrored inside the private network. Each row mounts one Loader entry from a local directory or module path.",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "path"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Row id, a lowercase identifier."
+              },
+              "path": {
+                "type": "string",
+                "description": "Absolute path of the plugin directory or module inside the network."
+              }
+            }
+          }
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "dsh.open",
+        "title": "DSH: Open Chat"
+      },
+      {
+        "command": "dsh.newSession",
+        "title": "DSH: New Session"
+      },
+      {
+        "command": "dsh.searchSessions",
+        "title": "DSH: Search Sessions"
+      },
+      {
+        "command": "dsh.forkSession",
+        "title": "DSH: Fork Session"
+      },
+      {
+        "command": "dsh.restart",
+        "title": "DSH: Restart Host"
+      },
+      {
+        "command": "dsh.configureCompany",
+        "title": "DSH: Configure Company Endpoint"
+      },
+      {
+        "command": "dsh.selectModel",
+        "title": "Select Company Model",
+        "category": "DSH"
+      },
+      {
+        "command": "dsh.showLog",
+        "title": "DSH: Show Log"
+      },
+      {
+        "command": "dsh.setApiKey",
+        "title": "DSH: Set DeepSeek API Key"
+      },
+      {
+        "command": "dsh.clearApiKey",
+        "title": "DSH: Clear DeepSeek API Key"
+      },
+      {
+        "command": "dsh.runInTerminal",
+        "title": "DSH: Run Command in Terminal"
+      },
+      {
+        "command": "dsh.setLlmKey",
+        "title": "DSH: Set Private Endpoint API Key"
+      },
+      {
+        "command": "dsh.clearLlmKey",
+        "title": "DSH: Clear Private Endpoint API Key"
+      },
+      {
+        "command": "dsh.diagnostics",
+        "title": "DSH: Show Diagnostics"
+      },
+      {
+        "command": "dsh.checkForUpdates",
+        "title": "DSH: Check for Updates"
+      },
+      {
+        "command": "dsh.installUpdate",
+        "title": "DSH: Install Update"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "dsh.newSession",
+        "key": "ctrl+alt+n",
+        "mac": "cmd+alt+n",
+        "when": "focusedView == dsh.chat"
+      },
+      {
+        "command": "dsh.searchSessions",
+        "key": "ctrl+alt+k",
+        "mac": "cmd+alt+k",
+        "when": "focusedView == dsh.chat"
+      },
+      {
+        "command": "dsh.forkSession",
+        "key": "ctrl+shift+f",
+        "mac": "cmd+shift+f",
+        "when": "focusedView == dsh.chat"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "dsh",
+          "title": "DSH",
+          "icon": "media/dsh.svg"
+        }
+      ]
+    },
+    "views": {
+      "dsh": [
+        {
+          "id": "dsh.chat",
+          "name": "Chat",
+          "type": "webview"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "build": "tsdown",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run --config vitest.config.ts",
+    "smoke:companion": "node scripts/companion-smoke.mjs",
+    "smoke:shared-host": "node scripts/shared-host-smoke.mjs",
+    "smoke:shared-attach": "node --import tsx/esm scripts/shared-host-attach-smoke.ts",
+    "smoke:shared-windows": "node --import tsx/esm scripts/shared-windows-smoke.ts",
+    "smoke:shared-plugin": "node --import tsx/esm scripts/shared-plugin-smoke.ts",
+    "smoke:transport": "node scripts/transport-smoke.mjs",
+    "smoke:upload": "node --import tsx/esm scripts/bridge-upload-smoke.ts",
+    "smoke:sandbox": "node scripts/sandbox-smoke.mjs",
+    "smoke:office": "node --import tsx/esm scripts/office-smoke.ts",
+    "smoke:composition": "node --import tsx/esm scripts/composition-smoke.ts",
+    "package:vsix": "node scripts/package-vsix.mjs",
+    "package:standalone": "node scripts/package-vsix.mjs --standalone",
+    "runtime:standalone": "node scripts/prepare-standalone-runtime.mjs",
+    "package:release": "node scripts/package-release.mjs",
+    "verify": "tsc -p tsconfig.json --noEmit && vitest run --config vitest.config.ts && tsdown && node scripts/transport-smoke.mjs && node scripts/package-vsix.mjs",
+    "smoke:offline-bundle": "node --import tsx/esm scripts/offline-bundle-smoke.ts",
+    "smoke:shared-turn": "node --import tsx/esm scripts/shared-turn-smoke.ts"
+  },
+  "dependencies": {
+    "@deepseek-ai/cordis": "workspace:~",
+    "@deepseek-ai/dsh": "workspace:*",
+    "@deepseek-ai/dsh-app-boot": "workspace:*",
+    "@deepseek-ai/dsh-brand": "workspace:*",
+    "@deepseek-ai/dsh-client-connection": "workspace:*",
+    "@deepseek-ai/dsh-client-modules": "workspace:*",
+    "@deepseek-ai/dsh-cmdline": "workspace:*",
+    "@deepseek-ai/dsh-home-paths": "workspace:*",
+    "@deepseek-ai/dsh-launch-environment": "workspace:*",
+    "@deepseek-ai/dsh-official-bundles": "workspace:*",
+    "@deepseek-ai/dsh-typert-protocol": "workspace:*",
+    "semver": "^7.8.5"
+  },
+  "devDependencies": {
+    "@deepseek-ai/dsh-api-session-controller": "workspace:*",
+    "@deepseek-ai/dsh-commands": "workspace:*",
+    "@deepseek-ai/dsh-host-webserver": "workspace:*",
+    "@deepseek-ai/dsh-agent": "workspace:*",
+    "@deepseek-ai/dsh-plugin-manager": "workspace:*",
+    "@deepseek-ai/dsh-shell": "workspace:*",
+    "@deepseek-ai/dsh-workspace": "workspace:*",
+    "@types/node": "^22.20.1",
+    "@types/vscode": "^1.96.0",
+    "tsdown": "^0.22.2",
+    "typescript": "^6.0.3"
+  }
+}

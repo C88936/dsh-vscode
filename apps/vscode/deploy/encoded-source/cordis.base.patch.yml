@@ -1,0 +1,56 @@
+# Optional top-level layer for compositions whose tool rows are top-level
+# entries: the base and headless profiles, and any profile that composes the
+# agent tools directly.
+#
+# This file is NOT part of `dsh.bundle.patch`. A top-level `insert` registers the
+# replacement tools for every Agent, so applying it to a Web profile also gave
+# the Minimal preset `read`, `grep`, and `glob`. The bundle therefore ships only
+# `presets.patch.yml`, which rewrites the intended Agent presets in place; apply
+# this file by hand only to a composition that really mounts these tool rows at
+# the top level.
+#
+# Native `tool-fs` keeps `read_image`, `write`, and `edit`; only `read` moves to
+# the replacement, so a workspace without the bundle installed behaves exactly
+# as before it was ever added.
+
+- id: tool-fs
+  name: '@deepseek-ai/dsh-tool-fs'
+  config:
+    read: false
+
+# The installed search suite registers both `grep` and `glob`. `glob` has no
+# encoding dimension, so the replacement registers the ORIGINAL `applyGlobTool`
+# with the same caps rather than reimplementing discovery.
+- id: tool-fs-search
+  name: '@deepseek-ai/dsh-tool-fs-search'
+  disabled: true
+
+- insert:
+    - id: tool-fs-encoded-source
+      name: '@deepseek-ai/dsh-tool-fs-encoded-source'
+      config:
+        # Required by the shared glob caps: an over-cap page keeps the
+        # modification-time head rather than sampling across top-level entries.
+        sampleOverCapGlobResults: false
+        # No per-path rules by default: an extension does not determine a
+        # codepage, and a rule decodes its path through the named codepage even
+        # when the bytes are valid UTF-8. The fallback below keeps the native
+        # UTF-8 contract for every file that already decodes as strict UTF-8
+        # and applies a legacy codepage only to the listed suffixes. GB18030 is
+        # the superset that also decodes GB2312 and GBK bytes, so mixed old
+        # projects need one entry. Use `rules` only when an operator really
+        # knows a path is legacy despite decoding as UTF-8.
+        fallback:
+          - encoding: gb18030
+            extensions:
+              - .cls
+              - .bas
+              - .frm
+              - .ctl
+              - .pag
+              - .vbp
+              - .cs
+              - .csproj
+        # UTF-16 needs no entry: a byte-order mark decides it before the
+        # fallback, and a BOM-less UTF-16 file is not text this policy can
+        # prove.

@@ -1,0 +1,82 @@
+CLAUDE.local.md
+.env
+apps/desktop/.env.windows
+apps/desktop/.env.macos
+apps/desktop/*.p12
+node_modules/
+lib/
+lib/
+*.tsbuildinfo
+pnpm-debug.log
+.pnpm-store/
+.cache/
+examples/*/*.jsonl
+.storages/
+.sessions/
+examples/*/.sessions/
+coverage/
+.coverage-times.json
+.doc-typecheck-*/
+.node-next-types-*/
+.oxlint-contract-*/
+.oxlintrc.contract-*.json
+oxlint-contract-*.ts
+.humanize/
+tmp/
+.claude/commands/
+.claude/launch.json
+.claude/settings.json
+.vscode/
+.DS_Store
+.idea
+mise.toml
+dist-exe/
+/dist/
+apps/desktop/.desktop-build/
+python/sdk-runtime/src/deepseek_harness_runtime/runtime/
+python/**/__pycache__/
+python/**/.pytest_cache/
+packages/**/__pycache__/
+apps/web/dist/
+.artifacts/
+.dsh-build/
+.dsh-report/
+.playwright-mcp/
+.orig
+.worktrees/
+worktrees/
+.agents/worktrees/
+.typert-*/
+native/system/test/bin/
+# VS Code extension: build staging, packaged distributions and local state are
+# produced artifacts, not sources. The managed runtime is 700 MB and is rebuilt
+# by `runtime:standalone`; the VSIX files are release outputs.
+apps/vscode/runtime/
+apps/vscode/.runtime-staging-*/
+apps/vscode/.vsix-staging/
+apps/vscode/.dev-storage/
+apps/vscode/.test-storage/
+apps/vscode/.vsix-test/
+apps/vscode/release.json
+apps/vscode/session.md
+*.vsix
+*.log
+.tmp/
+# A prepared offline bundle ships its verified closure as ordinary files: the
+# installed dependency copy and its tarball are deliverables, not dependencies
+# this checkout installed. Later patterns win, so these exceptions follow the
+# node_modules/ and lib/ rules above.
+!apps/vscode/deploy/encoded-source/node_modules/
+!apps/vscode/deploy/encoded-source/node_modules/**
+!apps/vscode/deploy/encoded-source/node_modules/**/lib/
+!apps/vscode/deploy/encoded-source/node_modules/**/lib/**
+
+# Upstream additions from 0.2.3
+apps/desktop/.desktop-dev/
+__pycache__/
+apps/cli/docs/
+.ui-review/
+
+# Generated company-signed CUA release record.
+/packages/experimental/cua-macos/cua-helper.json
+.tooling/
