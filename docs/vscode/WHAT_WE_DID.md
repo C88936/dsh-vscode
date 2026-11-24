@@ -72,6 +72,7 @@ node apps/vscode/scripts/bootstrap-vscode.mjs
 已验证：
 
 - 从干净克隆用上面一条命令构建出 323 MB 的 VSIX，运行时自带的 Node v24.22.3 能启动 companion、初始化 profile、创建会话、绑定工作区。
+- 用 mock 模型跑通一次完整回合：会话按 standard 预设挂载后，模型可见 **36 个工具**（ead、edit、glob、grep、pwsh、web_fetch、web_search、记忆工具、子代理、工作流等），工具调用被执行、结果回灌给模型、助手回复产生、会话落盘。
 - 扩展与客户端的 TypeScript 聚合编译通过，`build:artifacts` 的八个门禁全过。
 - 记忆插件的 `memory_add`、`memory_query`、`memory_status`、`memory_dream` 在启动探针里注册成功。
 

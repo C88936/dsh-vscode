@@ -42,9 +42,9 @@ const server = await startMockLlmServer({
   port: 0,
   sequence: ['tool_call_success', 'success', 'success'],
   repeatLast: true,
-  successText: 'The working directory is set.',
-  toolName: 'working_directory',
-  toolArguments: JSON.stringify({ cwd: workspace }),
+  successText: 'The file content is hello from the vscode turn smoke.',
+  toolName: 'read',
+  toolArguments: JSON.stringify({ path: target }),
 })
 process.env.DEEPSEEK_BASE_URL = `${server.baseURL}/v1`
 process.env.DEEPSEEK_API_KEY = 'mock-key'
@@ -53,7 +53,7 @@ const app = await bootDsh({
   extensionPath,
   storageDir,
   overlayPath: join(extensionPath, 'profile', 'vscode.patch.yml'),
-  log: line => { process.stderr.write(`${line}\n`) },
+  log: (line) => { process.stderr.write(`${line}\n`) },
 })
 
 const agents = app.ctx.get('agents') as AgentsLike | undefined
@@ -75,12 +75,20 @@ app.ctx.on('session/event', (...args: unknown[]) => {
   const event = args[1] as { type?: string } | undefined
   if (event?.type !== undefined) seen.push(event.type)
 })
+// The product path composes a preset in the agent's setup; the bare core API
+// does not, so mounting here is what gives the model its file and shell tools.
+const presets = app.ctx.get('agentPresets') as {
+  mount(agentCtx: unknown, id: string): Promise<void>
+} | undefined
+if (presets === undefined) throw new Error('agent preset service is missing')
 const handle = await agents.create({
   sessionId,
+  meta: { agentPreset: 'standard' },
+  setup: async (agentCtx: unknown) => { await presets.mount(agentCtx, 'standard') },
   agentOptions: { provider: 'deepseek-official', model: 'deepseek-flash' },
 })
 handle.agent.followup(createUserMessage({
-  content: [{ type: 'text', text: `Set the working directory to ${workspace} and report it.` }],
+  content: [{ type: 'text', text: `Read the file ${target} and report its content.` }],
   source: { kind: 'user' },
 }))
 await handle.agent.whenIdle()
