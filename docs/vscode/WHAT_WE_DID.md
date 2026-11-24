@@ -72,14 +72,14 @@ node apps/vscode/scripts/bootstrap-vscode.mjs
 已验证：
 
 - 从干净克隆用上面一条命令构建出 323 MB 的 VSIX，运行时自带的 Node v24.22.3 能启动 companion、初始化 profile、创建会话、绑定工作区。
+- 在隔离的 VS Code 用户目录里安装该 VSIX（VS Code 1.117）：扩展激活、命令出现在命令面板、DSH 视图渲染出中文界面（工作区选择器、标准模式 预设、输入框与附件/权限/发送按钮），首次打开视图时启动 companion 并初始化 profile、home、connections 目录。
 - 用 mock 模型跑通一次完整回合：会话按 standard 预设挂载后，模型可见 **36 个工具**（ead、edit、glob、grep、pwsh、web_fetch、web_search、记忆工具、子代理、工作流等），工具调用被执行、结果回灌给模型、助手回复产生、会话落盘。
 - 扩展与客户端的 TypeScript 聚合编译通过，`build:artifacts` 的八个门禁全过。
 - 记忆插件的 `memory_add`、`memory_query`、`memory_status`、`memory_dream` 在启动探针里注册成功。
 
 未验证（需要一块真实屏幕和一把真实 key）：
 
-- 真实 VS Code 窗口里首次打开面板、发送消息、看到流式输出。
-- 审批允许/拒绝、终端交互、图片与文件附件、多窗口、重启后恢复会话。
+- 在真实窗口里**发送消息并看到流式输出**（自动化输入没有打进 webview，这一步要人工点一次）、审批允许/拒绝、终端交互、图片与文件附件、多窗口、重启后恢复会话。
 - 模型侧的记忆写入与下次召回。
 - Windows 标准用户下 `workspace-write` 沙箱的授权，历史上在这台机器上失败过。
 
