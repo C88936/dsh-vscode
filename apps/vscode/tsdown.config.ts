@@ -5,7 +5,11 @@
  * loads the extension entry before it can resolve that runtime, so the entry
  * bundles the semver implementation used to check runtime compatibility.
  */
+import { readFileSync } from 'node:fs'
 import { defineConfig } from 'tsdown'
+
+/** Version the webview reports as the running DSH release. */
+const packageVersion = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf8')).version
 
 export default defineConfig([
   {
@@ -33,6 +37,9 @@ export default defineConfig([
     format: ['iife'],
     platform: 'browser',
     target: 'es2022',
+    // The webview reports this as the running DSH version; packaging already
+    // requires the extension and the embedded runtime to share it.
+    define: { 'process.env.DSH_EXTENSION_VERSION': JSON.stringify(packageVersion) },
     dts: false,
     sourcemap: true,
     clean: false,

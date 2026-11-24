@@ -24,6 +24,20 @@ const { values } = parseArgs({
 })
 
 /** pnpm's Windows launcher is a .cmd shim, which Node refuses to spawn without a shell. */
+// The client reads its published version from the build environment, and the
+// packaging step requires the extension version to equal the embedded DSH
+// version. Deriving both here keeps the Settings version row, the extension
+// manifest and the packaged runtime on one value for any build.
+const extensionVersion = JSON.parse(readFileSync(join(repoRoot, 'apps', 'vscode', 'package.json'), 'utf8')).version
+process.env.DSH_CLIENT_VERSION = extensionVersion
+if (process.env.DSH_CLIENT_COMMIT_HASH === undefined) {
+  try {
+    process.env.DSH_CLIENT_COMMIT_HASH = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: repoRoot, encoding: 'utf8' }).trim()
+  } catch {
+    process.env.DSH_CLIENT_COMMIT_HASH = '0000000'
+  }
+}
+
 const PNPM = 'pnpm'
 const PNPM_SHELL = process.platform === 'win32'
 const PNPM_OPTIONS = PNPM_SHELL ? { shell: true } : {}

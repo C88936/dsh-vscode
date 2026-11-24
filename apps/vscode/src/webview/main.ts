@@ -1075,6 +1075,9 @@ function installTransport(): void {
   globals.__DSH_TRANSPORT__ = {
     ownsHost: true,
     managesExtensions: true,
+    // Version of the running release, so pages report the DSH they talk to
+    // rather than a version frozen at client build time.
+    version: process.env.DSH_EXTENSION_VERSION,
     fetch: (input: RequestInfo | URL, init?: RequestInit) => live.fetch(input, init),
     openStream: (
       endpoint: string,

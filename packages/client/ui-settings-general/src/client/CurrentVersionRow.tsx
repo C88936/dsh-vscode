@@ -8,7 +8,10 @@ import css from './CurrentVersionRow.module.css'
  * @returns the current release label, or nothing when build metadata is absent.
  */
 export function CurrentVersionRow({ t }: PropsRuntime<'settings.general.item'> & PropsLocale<'settings'>) {
-  const version = process.env.DSH_CLIENT_VERSION
+  // A carrier that owns the host reports the release it actually runs, which
+  // stays correct when the page's own build metadata is absent or older.
+  const carried = (globalThis as { __DSH_TRANSPORT__?: { version?: string } }).__DSH_TRANSPORT__?.version
+  const version = carried ?? process.env.DSH_CLIENT_VERSION
   if (version === undefined) return null
   return <div className={css.row}>{t('general.currentVersion', { version })}</div>
 }
