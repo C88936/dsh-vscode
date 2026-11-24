@@ -197,6 +197,11 @@ describe('resolveWorkspaceFolder', () => {
     expect(() => resolveWorkspaceFolder(undefined)).toThrow('dsh: open a VS Code folder before starting DSH')
     expect(() => resolveWorkspaceFolder([])).toThrow('dsh: open a VS Code folder before starting DSH')
   })
+
+  it('binds the fallback directory when a window has no folder', () => {
+    expect(resolveWorkspaceFolder(undefined, 'E:\\storage\\workspace')).toBe('E:\\storage\\workspace')
+    expect(resolveWorkspaceFolder([], 'E:\\storage\\workspace')).toBe('E:\\storage\\workspace')
+  })
 })
 
 describe('compareWorkspaceFolders', () => {
@@ -290,16 +295,29 @@ describe('DshHost workspace binding', () => {
     await host.stop()
   })
 
-  it('refuses a restart with no open folder before stopping the running application', async () => {
+  it('keeps the empty-window binding open for the whole activation', async () => {
+    observed.folders = []
+    const host = newHost()
+    await host.start()
+    await host.createBridge(webview)
+
+    expect(host.workspaceBinding?.endsWith('workspace')).toBe(true)
+    expect(host.observeWorkspaceFolders().removed).toBe(false)
+    expect(host.cwd).toBe(host.workspaceBinding)
+
+    await host.stop()
+  })
+  it('rebinds a restart with no open folder to the storage workspace', async () => {
     observed.folders = [folder('file', '', 'E:\\work\\one')]
     const host = newHost()
     await host.start()
     await host.createBridge(webview)
 
     observed.folders = []
-    await expect(host.restart()).rejects.toThrow(/open a VS Code folder before starting DSH/u)
+    await host.restart()
+    await host.createBridge(webview)
     expect(host.snapshot().state).toBe('ready')
-    expect(host.workspaceBinding).toBe('E:\\work\\one')
+    expect(host.workspaceBinding?.endsWith('workspace')).toBe(true)
 
     await host.stop()
   })

@@ -141,6 +141,12 @@ export class UpdateController {
     const feedUrl = this.options.feedUrl().trim()
     const share = process.platform === 'win32' ? windowsUpdateShare(feedUrl) : undefined
     if (feedUrl === '') return { status: 'skipped', reason: 'no update feed URL is configured' }
+    // A feed is either a directory read through its file transport or an HTTP(S)
+    // document. Anything else — most often a local drive path — names no
+    // transport, so report that instead of failing later on the download field.
+    if (share === undefined && !/^https?:/iu.test(feedUrl)) {
+      return this.fail(`the update feed ${feedUrl} must be a UNC share directory or an HTTP(S) URL`)
+    }
     if (this.checking) return { status: 'busy', reason: 'an update check is already running' }
     const current = this.state
     if (current.name === 'staged') return { status: 'staged', staged: stagedFile(current) }

@@ -110,6 +110,8 @@ export class DshHost {
   private binding: string | undefined
   private launchRoot: string | undefined
   private workspaceRemoved = false
+  /** Whether the current binding is the empty-window fallback rather than an open folder. */
+  private fallbackBinding = false
 
   /**
    * @param extension - the extension context, for storage and the shipped overlay.
@@ -197,6 +199,13 @@ export class DshHost {
    * @returns the comparison, including whether the binding was removed.
    */
   observeWorkspaceFolders(): WorkspaceChange {
+    // An empty window binds the storage fallback, which is never an open folder:
+    // comparing it against an empty folder list would report the binding removed
+    // and refuse every operation that needs a root.
+    if (this.fallbackBinding && (vscode.workspace.workspaceFolders?.length ?? 0) === 0) {
+      this.workspaceRemoved = false
+      return { bound: this.binding, current: this.binding, folders: 0, refusal: undefined, changed: false, removed: false }
+    }
     const change = compareWorkspaceFolders(this.binding, vscode.workspace.workspaceFolders)
     this.workspaceRemoved = change.removed
     return change
@@ -925,11 +934,19 @@ export class DshHost {
    * Resolve the folder this launch binds, once per start, and store it as the
    * pending launch root. The binding itself changes only after a successful
    * launch, so a failed switch leaves the previous binding in place.
-   * @returns the resolved local workspace root.
-   * @throws when no folder is open or the first root is not a local file: folder.
+   * @returns the resolved local workspace root, or the storage fallback for an empty window.
+   * @throws when the first root is not a local file: folder.
    */
   private prepareLaunchWorkspace(): string {
-    const root = resolveWorkspaceFolder(vscode.workspace.workspaceFolders)
+    // An empty window still gets a Session: it binds a directory inside the
+    // extension's storage, created on first use, so the file tools have a root
+    // without the window needing one. Opening a folder later rebinds on the next
+    // launch; a window that has a folder never creates this directory.
+    const fallback = vscode.workspace.workspaceFolders?.[0] === undefined
+      ? this.emptyWindowRoot()
+      : undefined
+    const root = resolveWorkspaceFolder(vscode.workspace.workspaceFolders, fallback)
+    this.fallbackBinding = fallback !== undefined
     const repeated = this.launchRoot === root
     this.launchRoot = root
     if (this.binding === undefined) {
@@ -941,6 +958,15 @@ export class DshHost {
       this.log(`dsh: the next launch binds ${root}; the running binding stays ${this.binding}`)
     }
     return root
+  }
+
+  /**
+   * @returns the directory an empty window binds, created on first use.
+   */
+  private emptyWindowRoot(): string {
+    const directory = join(this.storageDir, 'workspace')
+    mkdirSync(directory, { recursive: true })
+    return directory
   }
 
   /**
@@ -1123,12 +1149,19 @@ export interface WorkspaceFolderLike {
  * local filesystem path. The single-folder policy binds the first root only,
  * so a multi-root window uses its first folder.
  * @param folders - VS Code workspace roots in display order.
- * @returns the local filesystem path of the first root.
- * @throws when no folder is open, or the first root is not a local file folder.
+ * @param fallback - directory a window with no folder binds instead; absent refuses the launch.
+ * @returns the local filesystem path of the first root, or the fallback directory.
+ * @throws when no folder is open and no fallback is supplied, or the first root is not a local file folder.
  */
-export function resolveWorkspaceFolder(folders: readonly WorkspaceFolderLike[] | undefined): string {
+export function resolveWorkspaceFolder(
+  folders: readonly WorkspaceFolderLike[] | undefined,
+  fallback?: string,
+): string {
   const folder = folders?.[0]
-  if (folder === undefined) throw new Error('dsh: open a VS Code folder before starting DSH')
+  if (folder === undefined) {
+    if (fallback === undefined) throw new Error('dsh: open a VS Code folder before starting DSH')
+    return fallback
+  }
   const { scheme, fsPath } = folder.uri
   if (scheme !== 'file') throw new Error(unsupportedSchemeMessage(scheme))
   return fsPath
