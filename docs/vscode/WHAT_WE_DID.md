@@ -41,7 +41,19 @@ English summary: this fork adds a VS Code extension over DeepSeek Harness, an of
 | `dsh.llmContextWindow` | 该模型的上下文窗口 |
 | `dsh.terminalBackend` | `local`（受沙箱与权限预设约束）或 `vscode`（集成终端，无沙箱） |
 
-Key 本身通过 `DSH: Set Private Endpoint API Key` 写入 VS Code SecretStorage，不落配置文件。
+### Key 放在哪里
+
+内网分发的 VSIX 已经把网关地址、模型名和上下文窗口写成默认值，所以同事**不需要输入任何网址**，只缺一把 key。三种放法，按管理方式选一种：
+
+| 方式 | 谁来做 | 优点 | 代价 |
+|---|---|---|---|
+| 命令 `DSH: Set Private Endpoint API Key` | 每个用户一次 | 进 VS Code SecretStorage，不落明文，不泄露给其他进程 | 每台机器要做一次 |
+| 机器环境变量 `DSH_LLM_API_KEY`（IT 用组策略下发） | IT 一次 | 用户零操作，打开就能用 | 环境变量对子进程可见，模型执行的命令理论上能读到 |
+| 工作区 `.env` 里写 `DSH_LLM_API_KEY` | 用户或项目 | 随项目走 | 明文落盘，慎用 |
+
+默认取 `DSH_LLM_API_KEY`；如果内部约定换名字，改 `dsh.llmApiKeyEnv` 即可。
+
+两种构建只差默认值：**内网版**内置公司网关与模型，**公开版**（GitHub release）是占位符。内网版不要上传到公开仓库。
 
 排查用两条命令：`DSH: Show Diagnostics`（模式、运行时版本、工作目录、路由、key 是否就绪、shell 后端）与 `DSH: Show Log`。
 
