@@ -211,6 +211,22 @@
   position: relative;
 }
 
+.cardId {
+  flex-shrink: 0;
+  align-self: center;
+  max-width: 35%;
+  padding: 0 6px;
+  border-radius: 6px;
+  background: var(--dsw-alias-bg-layer-2);
+  font-family: var(--dsw-font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: 11px;
+  line-height: 18px;
+  color: var(--dsw-alias-label-tertiary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .cardIdentity {
   flex: 1;
   min-width: 0;

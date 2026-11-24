@@ -43,6 +43,7 @@ async function boot(openResource: (request: { address: string; path?: string; li
   } as never)
   ctx.provide('layout', layout as never)
   ctx.provide('resources', { pin: vi.fn(() => () => {}) } as never)
+  ctx.provide('contextMenus', { register: vi.fn(() => () => {}) } as never)
   ctx.provide('sessions', { list, retain: vi.fn(() => ({ ready: Promise.resolve(), release: vi.fn() })) } as never)
   ctx.provide('uiSession', { adapter: { current } } as never)
   const fiber = ctx.plugin({ inject: [...inject], apply })
@@ -58,8 +59,10 @@ describe('ui-sidebar-right native composition', () => {
   it('registers no seat and opens a file at the requested line', async () => {
     const openResource = vi.fn()
     const h = await boot(openResource)
-    expect(h.registered).toEqual([])
-    expect(h.slots.inject).not.toHaveBeenCalled()
+    // The native composition keeps the navigation face and the context-menu rows;
+    // it registers no right-column seat, so no page surface can open.
+    expect(h.registered.map((row: { name?: string }) => row.name)).toEqual(['contextMenu.icon', 'contextMenu.content'])
+    expect(h.slots.inject.mock.calls.map(call => call[0])).toEqual(['contextMenu.icon', 'contextMenu.content'])
     h.ctx.sidebarRight.openResource(
       'dsh-resource://file/session/s-test/docs/a%20b.txt',
       { params: { line: 7 } },
